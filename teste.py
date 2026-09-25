@@ -1,10 +1,10 @@
+#All documentation can be found in: 
+
 import subprocess
-import random
+import random    
 
-saldo = round(random.uniform(40, 80), 2)
-
-print(f"""
-BEM VINDO AO MERCADINHO DE ERLINANDA!""")
+saldo = round(random.uniform(200, 300), 2)
+produto_escolhido: dict
 
 catalogo = {
     "feijao": {"nome": "FEIJAO", "preco": 6.50, "estoque": 10},
@@ -12,33 +12,82 @@ catalogo = {
     "batata": {"nome": "BATATA", "preco": 2, "estoque": 10},
 }
 
-def exibirCatalogo():
-    print(f"""
-    Seu saldo atual é de R${saldo:.2f}
-    Escolha uma das opções abaixo, digitando o número correspondente ao produto
-""")
-    
+#def exibirSaldoCatalogo usage documented here:
+def exibirSaldoCatalogo():
+    print(f"\tSeu saldo atual é de R${saldo:.2f}")
+    print("\tEscolha uma das opções abaixo, digitando um número correspondente ao produto\n")
     print(f"1 -- {catalogo['feijao']['nome']} R${catalogo['feijao']['preco']:.2f}, estoque: {catalogo['feijao']['estoque']}")
     print(f"2 -- {catalogo['patinho']['nome']} R${catalogo['patinho']['preco']:.2f}, estoque: {catalogo['patinho']['estoque']}")
     print(f"3 -- {catalogo['batata']['nome']} R${catalogo['batata']['preco']:.2f}, estoque: {catalogo['batata']['estoque']}")
 
-while True:
 
-    exibirCatalogo()
+#def escolherOpcao usage documented here:
+def escolherOpcao():
 
-    opcao = int(input())
-
-    if opcao == 1:
-        produto_escolhido = catalogo['feijao']
-    elif opcao == 2:
-        produto_escolhido = catalogo['patinho']
-    elif opcao == 3:
-        produto_escolhido = catalogo['batata']
+    #try/except usage documented here:
+    try:
+        opcao = int(input())
+    except ValueError:
+        print("Digite apenas os números das opções!")
+        input("Pressione Enter para continuar...")
+        subprocess.run("cls", shell="true")
+        return None
+    
+    if opcao == 1 :
+        if catalogo['feijao']['estoque'] > 0 :
+            produto_escolhido = catalogo['feijao']
+            return produto_escolhido
+        else:
+            print("Estamos em falta!")
+            input("Pressione Enter para continuar...")
+            subprocess.run("cls", shell="true")
+            return None    
+    elif opcao == 2 :
+        if catalogo['patinho']['estoque'] > 0 :
+            produto_escolhido = catalogo['patinho']
+            return produto_escolhido
+        else:
+            print("Estamos em falta!")
+            input("Pressione Enter para continuar...")
+            subprocess.run("cls", shell="true")
+            return None
+    elif opcao == 3 :
+        if catalogo['batata']['estoque'] > 0 :
+            produto_escolhido = catalogo['batata']
+            return produto_escolhido
+        else:
+            print("Estamos em falta!")
+            input("Pressione Enter para continuar...")
+            subprocess.run("cls", shell="true")
+            return None
+    
     else:
         print("Opção inválida!")
+        input("Pressione Enter para continuar...")
+        subprocess.run("cls", shell="true")
+    return None
+
+
+print("\nBEM VINDO AO MERCADINHO DE ERLINANDA!\n")
+
+
+while True:
+
+    exibirSaldoCatalogo()    
+
+    produto_escolhido = escolherOpcao()
+
+    if produto_escolhido == None :
+        continue    
 
     print(f"Você escolheu {produto_escolhido['nome']}, agora escolha quanto você quer levar")
-    quantidade = int(input())
+
+    try:
+        quantidade = int(input())
+    except ValueError:
+        print("Digite apenas números!")
+        input("Pressione Enter para continuar...")
+        continue
 
     if (produto_escolhido["estoque"] - quantidade) >= 0:
         print(f"""
@@ -48,6 +97,8 @@ while True:
         input()
     else:
         print("Digite um número válido!")
+        input("Pressione Enter para continuar...")
+        continue
 
     produto_escolhido["estoque"] -= quantidade
     saldo -= quantidade * produto_escolhido["preco"]
