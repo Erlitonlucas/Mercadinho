@@ -9,16 +9,17 @@ produto_escolhido: dict
 catalogo = {
     "feijao": {"nome": "FEIJAO", "preco": 6.50, "estoque": 10},
     "patinho": {"nome": "PATINHO", "preco": 10, "estoque": 10},
-    "batata": {"nome": "BATATA", "preco": 2, "estoque": 10},
+    "batata": {"nome": "BATATA", "preco": 2, "estoque": 10}
 }
 
 #def exibirSaldoCatalogo usage documented here:
 def exibirSaldoCatalogo():
     print(f"\tSeu saldo atual é de R${saldo:.2f}")
     print("\tEscolha uma das opções abaixo, digitando um número correspondente ao produto\n")
-    print(f"1 -- {catalogo['feijao']['nome']} R${catalogo['feijao']['preco']:.2f}, estoque: {catalogo['feijao']['estoque']}")
-    print(f"2 -- {catalogo['patinho']['nome']} R${catalogo['patinho']['preco']:.2f}, estoque: {catalogo['patinho']['estoque']}")
-    print(f"3 -- {catalogo['batata']['nome']} R${catalogo['batata']['preco']:.2f}, estoque: {catalogo['batata']['estoque']}")
+
+    for indice, key in enumerate(list(catalogo.keys()), start=1):
+        produto = catalogo[key]
+        print(f"{indice} -- {produto["nome"]} R${produto["preco"]:.2f}, estoque {produto["estoque"]}")
 
 
 #def escolherOpcao usage documented here:
@@ -70,7 +71,7 @@ def escolherOpcao():
 
 print("\nBEM VINDO AO MERCADINHO DE ERLINANDA!\n")
 
-
+#
 while True:
 
     exibirSaldoCatalogo()    
@@ -87,6 +88,7 @@ while True:
     except ValueError:
         print("Digite apenas números!")
         input("Pressione Enter para continuar...")
+        subprocess.run("cls", shell="true")
         continue
 
     if (produto_escolhido["estoque"] - quantidade) >= 0:
@@ -95,12 +97,13 @@ while True:
         Confirmar compra?
        -Enter para confirmar-""")
         input()
+        produto_escolhido["estoque"] -= quantidade
+        saldo -= quantidade * produto_escolhido["preco"]
     else:
         print("Digite um número válido!")
         input("Pressione Enter para continuar...")
+        subprocess.run("cls", shell="true")
         continue
 
-    produto_escolhido["estoque"] -= quantidade
-    saldo -= quantidade * produto_escolhido["preco"]
         
     subprocess.run("cls", shell="true")
