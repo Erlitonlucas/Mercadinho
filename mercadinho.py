@@ -12,14 +12,16 @@ catalogo = {
     "batata": {"nome": "BATATA", "preco": 2, "estoque": 10}
 }
 
+lista = list(catalogo.keys())
+
 #def exibirSaldoCatalogo usage documented here:
 def exibirSaldoCatalogo():
     print(f"\tSeu saldo atual é de R${saldo:.2f}")
     print("\tEscolha uma das opções abaixo, digitando um número correspondente ao produto\n")
 
-    for indice, key in enumerate(list(catalogo.keys()), start=1):
+    for indice, key in enumerate(catalogo, start=1):
         produto = catalogo[key]
-        print(f"{indice} -- {produto["nome"]} R${produto["preco"]:.2f}, estoque {produto["estoque"]}")
+        print(f"{indice} -- {produto['nome']} R${produto['preco']:.2f}, estoque {produto['estoque']}")
 
 
 #def escolherOpcao usage documented here:
@@ -31,67 +33,39 @@ def escolherOpcao():
     except ValueError:
         print("Digite apenas os números das opções!")
         input("Pressione Enter para continuar...")
-        subprocess.run("cls", shell="true")
+        subprocess.run("cls", shell=True)
         return None
     
-    if opcao == 1 :
-        if catalogo['feijao']['estoque'] > 0 :
-            produto_escolhido = catalogo['feijao']
+    if 1 <= opcao <= len(lista):
+        chave = lista[opcao - 1]
+        produto_escolhido = catalogo[chave]
+
+        if produto_escolhido['estoque'] > 0:
             return produto_escolhido
         else:
-            print("Estamos em falta!")
+            print(f"Desculpe, estamos sem estoque para {produto_escolhido['nome']}!")
             input("Pressione Enter para continuar...")
-            subprocess.run("cls", shell="true")
-            return None    
-    elif opcao == 2 :
-        if catalogo['patinho']['estoque'] > 0 :
-            produto_escolhido = catalogo['patinho']
-            return produto_escolhido
-        else:
-            print("Estamos em falta!")
-            input("Pressione Enter para continuar...")
-            subprocess.run("cls", shell="true")
-            return None
-    elif opcao == 3 :
-        if catalogo['batata']['estoque'] > 0 :
-            produto_escolhido = catalogo['batata']
-            return produto_escolhido
-        else:
-            print("Estamos em falta!")
-            input("Pressione Enter para continuar...")
-            subprocess.run("cls", shell="true")
-            return None
-    
+            subprocess.run("cls", shell=True)
+
+        
     else:
-        print("Opção inválida!")
+        print("Coloque uma opção que esteja no catálogo!")
         input("Pressione Enter para continuar...")
-        subprocess.run("cls", shell="true")
+        subprocess.run("cls", shell=True)
     return None
 
 
-print("\nBEM VINDO AO MERCADINHO DE ERLINANDA!\n")
-
-#
-while True:
-
-    exibirSaldoCatalogo()    
-
-    produto_escolhido = escolherOpcao()
-
-    if produto_escolhido == None :
-        continue    
-
-    print(f"Você escolheu {produto_escolhido['nome']}, agora escolha quanto você quer levar")
+def escolherQuantidade(saldo):
 
     try:
         quantidade = int(input())
     except ValueError:
         print("Digite apenas números!")
         input("Pressione Enter para continuar...")
-        subprocess.run("cls", shell="true")
-        continue
+        subprocess.run("cls", shell=True)
+        return None
 
-    if (produto_escolhido["estoque"] - quantidade) >= 0:
+    if 0 < quantidade <= produto_escolhido['estoque']:
         print(f"""
         Valor total: R${quantidade * produto_escolhido['preco']}
         Confirmar compra?
@@ -99,11 +73,30 @@ while True:
         input()
         produto_escolhido["estoque"] -= quantidade
         saldo -= quantidade * produto_escolhido["preco"]
+        return saldo
     else:
         print("Digite um número válido!")
         input("Pressione Enter para continuar...")
-        subprocess.run("cls", shell="true")
+        subprocess.run("cls", shell=True)
+        return None
+
+
+#
+while True:
+    print("\nBEM VINDO AO MERCADINHO DE ERLINANDA!\n")
+
+    exibirSaldoCatalogo()
+
+    produto_escolhido = escolherOpcao()
+    if produto_escolhido == None:
         continue
 
+    print(f"Você escolheu {produto_escolhido['nome']}, agora escolha quanto você quer levar")
+
+    quantidade_escolhida = escolherQuantidade(saldo)
+    if quantidade_escolhida == None:
+        continue
+    else:
+        saldo = quantidade_escolhida
         
-    subprocess.run("cls", shell="true")
+    subprocess.run("cls", shell=True)
